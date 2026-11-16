@@ -1,0 +1,68 @@
+<section class="players-container">
+    <h2>Listado de jugadores</h2>
+
+    <form [formGroup]="filtersForm" (ngSubmit)="applyFilters()" class="filters">
+        <input type="text" formControlName="name" placeholder="Buscar por nombre" />
+
+        <input type="text" formControlName="club" placeholder="Buscar por club" />
+
+        <input type="text" formControlName="position" placeholder="Posición (CF, ST, CM...)" />
+
+        <button type="submit" [disabled]="loading">
+            Buscar
+        </button>
+
+        <button type="button" (click)="clearFilters()" [disabled]="loading">
+            Limpiar
+        </button>
+    </form>
+
+    @if (loading) {
+    <p>Cargando jugadores...</p>
+    } @else if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+    } @else if (players.length === 0) {
+    <p>No se encontraron jugadores.</p>
+    } @else {
+    <p>Jugadores encontrados: {{ total }}</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Jugador</th>
+                    <th>Club</th>
+                    <th>Posición</th>
+                    <th>Nacionalidad</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (player of players; track player.id) {
+                <tr>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.club }}</td>
+                    <td>{{ player.position }}</td>
+                    <td>{{ player.nationality }}</td>
+                    <td>{{ player.rating }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    @if (totalPages > 0) {
+    <div class="pagination">
+        <button type="button" (click)="previousPage()" [disabled]="page === 1 || loading">
+            Anterior
+        </button>
+
+        <span>Página {{ page }} de {{ totalPages }}</span>
+
+        <button type="button" (click)="nextPage()" [disabled]="page === totalPages || loading">
+            Siguiente
+        </button>
+    </div>
+    }
+</section>

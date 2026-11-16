@@ -1,11 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { PlayerComponent } from './components/player/player';
+import { PlayersListComponent } from './components/players-list/players-list';
 
 @Component({
   selector: 'app-root',
+  imports: [PlayersListComponent],
   templateUrl: './app.html',
-  imports: [PlayerComponent],
   styleUrl: './app.css',
 })
 export class App {

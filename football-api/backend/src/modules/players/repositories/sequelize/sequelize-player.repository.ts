@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { PlayerModel } from './player.model'; // Sequelize model
-import { IPlayerRepository } from '../../interfaces/player-repository.interface';
+import { Op, type WhereOptions } from 'sequelize';
+
+import { PlayerModel } from './player.model';
+import {
+  IPlayerSearchRepository,
+  PlayerQuery,
+  PaginatedResult,
+} from '../../interfaces/player-repository.interface';
+
 import { Player } from '../../entities/player.entity';
 
 @Injectable()
-export class SequelizePlayerRepository implements IPlayerRepository {
+export class SequelizePlayerRepository implements IPlayerSearchRepository {
   constructor(
     @InjectModel(PlayerModel)
     private readonly playerModel: typeof PlayerModel,
@@ -14,6 +21,44 @@ export class SequelizePlayerRepository implements IPlayerRepository {
   async findAll(): Promise<Player[]> {
     const playerList = await this.playerModel.findAll();
     return playerList.map((x) => this.mapToEntity(x));
+  }
+
+
+  async findPage(
+    query: PlayerQuery,
+  ): Promise<PaginatedResult<Player>> {
+
+    const { page, limit, name, club, position } = query;
+
+    const where: WhereOptions<PlayerModel> = {
+      ...(name && {
+        longName: { [Op.like]: `%${name}%` },
+      }),
+      ...(club && {
+        clubName: { [Op.like]: `%${club}%` },
+      }),
+      ...(position && {
+        playerPositions: { [Op.like]: `%${position}%` },
+      }),
+    };
+
+    const offset = (page - 1) * limit;
+
+    const { rows, count } =
+      await this.playerModel.findAndCountAll({
+        where,
+        limit,
+        offset,
+        order: [['id', 'ASC']],
+      });
+
+    return {
+      data: rows.map((model) => this.mapToEntity(model)),
+      total: count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    };
   }
 
   async findOneById(id: number): Promise<Player | undefined> {
@@ -25,7 +70,6 @@ export class SequelizePlayerRepository implements IPlayerRepository {
   }
 
   private mapToEntity(model: PlayerModel): Player {
-    console.log('Mapping PlayerModel to Player entity:', model);
     if (!model) {
       throw new Error('Attempted to map null model to Player entity');
     }
