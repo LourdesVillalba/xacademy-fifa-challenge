@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -13,7 +14,7 @@ import {
 @Component({
   selector: 'app-players-list',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './players-list.html',
   styleUrl: './players-list.css',
 })

@@ -7,10 +7,14 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  Body,
+  Put,
+  ValidationPipe,
 } from '@nestjs/common';
 
 import { PlayersService } from './players.service';
 import { PlayerDto } from './dto/player.dto';
+import { UpdatePlayerDto } from './dto/update-player.dto';
 
 @Controller('api/players')
 export class PlayersController {
@@ -78,6 +82,30 @@ export class PlayersController {
     if (!player) {
       throw new NotFoundException(
         `Player with ID ${id} not found.`,
+      );
+    }
+
+    return new PlayerDto(player);
+  }
+
+
+  @Put(':id')
+  async updatePlayer(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    )
+    data: UpdatePlayerDto,
+  ): Promise<PlayerDto> {
+    const player = await this.playersService.updatePlayer(id, data);
+
+    if (!player) {
+      throw new NotFoundException(
+        `Jugador con ID ${id} no encontrado.`,
       );
     }
 

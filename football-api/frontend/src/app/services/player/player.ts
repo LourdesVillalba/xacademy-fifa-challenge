@@ -33,6 +33,21 @@ export interface PaginatedPlayers {
   totalPages: number;
 }
 
+export type UpdatePlayerPayload = Pick<
+  Player,
+  | 'name'
+  | 'club'
+  | 'position'
+  | 'nationality'
+  | 'rating'
+  | 'speed'
+  | 'shooting'
+  | 'passing'
+  | 'dribbling'
+  | 'defending'
+  | 'physic'
+>;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -67,5 +82,15 @@ export class PlayerService {
     return this.http.get<PaginatedPlayers>(this.baseUrl, {
       params,
     });
+  }
+
+  updatePlayer(
+    id: number,
+    data: UpdatePlayerPayload,
+  ): Observable<Player> {
+    return this.http.put<Player>(
+      `${this.baseUrl}/${id}`,
+      data
+    );
   }
 }

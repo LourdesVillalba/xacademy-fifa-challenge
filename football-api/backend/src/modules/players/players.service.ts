@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UpdatePlayerDto } from './dto/update-player.dto';
 
 import {
   IPlayerSearchRepository,
@@ -14,6 +15,13 @@ export class PlayersService {
     @Inject('IPlayerRepository')
     private readonly playerRepository: IPlayerSearchRepository,
   ) {}
+
+  updatePlayer(
+    id: number,
+    data: UpdatePlayerDto,
+  ): Promise<Player | undefined> {
+    return this.playerRepository.updateById(id, data);
+  }
 
   getPlayerById(id: number): Promise<Player | undefined> {
     return this.playerRepository.findOneById(id);

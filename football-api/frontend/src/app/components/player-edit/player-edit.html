@@ -1,0 +1,109 @@
+<section class="edit-container">
+
+    <a [routerLink]="['/players', playerId]">
+        ← Volver al detalle
+    </a>
+
+    <h2>Editar jugador</h2>
+
+    @if (loading) {
+    <p>Cargando información...</p>
+    } @else {
+
+    @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (playerId > 0 && form) {
+    <form [formGroup]="form" (ngSubmit)="savePlayer()">
+
+        <h3>Información general</h3>
+
+        <div class="form-grid">
+
+            <div class="field">
+                <label for="name">Nombre completo</label>
+                <input id="name" type="text" formControlName="name" />
+            </div>
+
+            <div class="field">
+                <label for="club">Club</label>
+                <input id="club" type="text" formControlName="club" />
+            </div>
+
+            <div class="field">
+                <label for="position">Posición</label>
+                <input id="position" type="text" formControlName="position" />
+            </div>
+
+            <div class="field">
+                <label for="nationality">Nacionalidad</label>
+                <input id="nationality" type="text" formControlName="nationality" />
+            </div>
+
+            <div class="field">
+                <label for="rating">Rating</label>
+                <input id="rating" type="number" min="0" max="100" step="1" formControlName="rating" />
+            </div>
+
+        </div>
+
+        <h3>Habilidades</h3>
+
+        <div class="form-grid">
+
+            <div class="field">
+                <label for="speed">Velocidad</label>
+                <input id="speed" type="number" min="0" max="100" step="1" formControlName="speed" />
+            </div>
+
+            <div class="field">
+                <label for="shooting">Tiro</label>
+                <input id="shooting" type="number" min="0" max="100" step="1" formControlName="shooting" />
+            </div>
+
+            <div class="field">
+                <label for="passing">Pase</label>
+                <input id="passing" type="number" min="0" max="100" step="1" formControlName="passing" />
+            </div>
+
+            <div class="field">
+                <label for="dribbling">Regate</label>
+                <input id="dribbling" type="number" min="0" max="100" step="1" formControlName="dribbling" />
+            </div>
+
+            <div class="field">
+                <label for="defending">Defensa</label>
+                <input id="defending" type="number" min="0" max="100" step="1" formControlName="defending" />
+            </div>
+
+            <div class="field">
+                <label for="physic">Físico</label>
+                <input id="physic" type="number" min="0" max="100" step="1" formControlName="physic" />
+            </div>
+
+        </div>
+
+        @if (form.invalid && form.touched) {
+        <p class="error">
+            Revisá los campos: todos son obligatorios,
+            los textos no pueden estar vacíos y los
+            valores numéricos deben ser enteros entre 0 y 100.
+        </p>
+        }
+
+        <div class="actions">
+            <button type="submit" [disabled]="saving">
+                {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+
+            <a [routerLink]="['/players', playerId]">
+                Cancelar
+            </a>
+        </div>
+
+    </form>
+    }
+    }
+
+</section>

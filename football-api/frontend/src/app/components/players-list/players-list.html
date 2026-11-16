@@ -35,6 +35,7 @@
                     <th>Posición</th>
                     <th>Nacionalidad</th>
                     <th>Rating</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,6 +46,11 @@
                     <td>{{ player.position }}</td>
                     <td>{{ player.nationality }}</td>
                     <td>{{ player.rating }}</td>
+                    <td>
+                        <a [routerLink]="['/players', player.id]">
+                            Ver detalle
+                        </a>
+                    </td>
                 </tr>
                 }
             </tbody>

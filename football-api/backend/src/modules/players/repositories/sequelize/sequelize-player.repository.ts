@@ -7,6 +7,7 @@ import {
   IPlayerSearchRepository,
   PlayerQuery,
   PaginatedResult,
+  UpdatePlayerData,
 } from '../../interfaces/player-repository.interface';
 
 import { Player } from '../../entities/player.entity';
@@ -66,6 +67,45 @@ export class SequelizePlayerRepository implements IPlayerSearchRepository {
     if (!model) {
       return undefined;
     }
+    return this.mapToEntity(model);
+  }
+
+  async updateById(
+    id: number,
+    data: UpdatePlayerData,
+  ): Promise<Player | undefined> {
+    const model = await this.playerModel.findByPk(id);
+
+    if (!model) {
+      return undefined;
+    }
+
+    // Conservamos las posiciones secundarias del jugador.
+    const secondaryPositions = (model.playerPositions ?? '')
+      .split(',')
+      .slice(1)
+      .map((position) => position.trim())
+      .filter((position) => position && position !== data.position);
+
+    const positions = [
+      data.position.trim(),
+      ...secondaryPositions,
+    ].join(', ');
+
+    await model.update({
+      longName: data.name.trim(),
+      clubName: data.club.trim(),
+      playerPositions: positions,
+      nationalityName: data.nationality.trim(),
+      overall: data.rating,
+      pace: data.speed,
+      shooting: data.shooting,
+      passing: data.passing,
+      dribbling: data.dribbling,
+      defending: data.defending,
+      physic: data.physic,
+    });
+
     return this.mapToEntity(model);
   }
 
